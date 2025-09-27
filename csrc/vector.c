@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<math.h>
+#include <immintrin.h>   // AVX, SSE, etc.
 #include "vector.h"
 
 Vector* init_vec(int size){
@@ -81,8 +82,27 @@ float dot(const Vector* v1, const Vector* v2){
         fprintf(stderr,"size not same\n");
         return 0.0f;
     }
-    for(int i=0;i<v1->size;i++){
+    /*for(int i=0;i<v1->size;i++){
         sum += (v1->data[i] * v2->data[i]);
+    }*/
+    int size = v1->size;
+    float* d1 = v1->data;
+    float* d2 = v2->data;
+
+    int i = 0;
+    int unroll_factor = 4;
+    int limit = size - (size % unroll_factor);
+
+    // loop unrolling 4 elements at a time
+    for (; i < limit; i+=unroll_factor){
+        sum += d1[i] * d2[i];
+        sum += d1[i+1] * d2[i+1];
+        sum += d1[i+2] * d2[i+2];
+        sum += d1[i+3] * d2[i+3];
+    }
+
+    for(;i < size; i++){
+        sum += d1[i] * d2[i];
     }
     return sum;
 }
