@@ -31,6 +31,13 @@ Mini-ML is a lightweight **C backend library** integrated with Python for **fast
 - Benchmarkable against NumPy for performance comparison
 
 ---
+### Benchmarking
+
+### Vector Dot Product
+![Dot Product Benchmark](assets/vec_dot.jpg)
+
+### Matrix Multiplication
+![Matrix Multiplication Benchmark](assets/mat_mul_v2.jpg)
 
 ## 🔹 Installation
 
