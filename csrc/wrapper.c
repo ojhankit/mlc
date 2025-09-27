@@ -62,6 +62,86 @@ static PyObject* py_print_vec(PyObject* self, PyObject* args){
     Py_RETURN_NONE;
 }
 
+static PyObject* py_vec_add(PyObject* self, PyObject* args){
+    PyObject *capsule1, *capsule2;
+    // Parse arguments: two PyCapsules
+    if(!PyArg_ParseTuple(args, "OO", &capsule1, &capsule2)){
+        return NULL;
+    }
+
+    Vector *v1 = (Vector*)PyCapsule_GetPointer(capsule1, "Vector");
+    Vector *v2 = (Vector*)PyCapsule_GetPointer(capsule2,"Vector");
+
+    if(!v1 || !v2){
+        return NULL;
+    }
+
+    Vector* res = vec_add(v1, v2);
+    return PyCapsule_New((void*)res, "Vector", NULL);
+}
+
+static PyObject* py_vec_sub(PyObject* self, PyObject* args){
+    PyObject *capsule1, *capsule2;
+    // Parse arguments: two PyCapsules
+    if(!PyArg_ParseTuple(args, "OO", &capsule1, &capsule2)){
+        return NULL;
+    }
+
+    Vector *v1 = (Vector*)PyCapsule_GetPointer(capsule1, "Vector");
+    Vector *v2 = (Vector*)PyCapsule_GetPointer(capsule2,"Vector");
+
+    if(!v1 || !v2){
+        return NULL;
+    }
+
+    Vector* res = vec_sub(v1, v2);
+    return PyCapsule_New((void*)res, "Vector", NULL);
+}
+
+static PyObject* py_scalar_mul(PyObject* self, PyObject* args){
+    PyObject *capsule;
+    float scalar;
+
+    if (!PyArg_ParseTuple(args, "Of", &capsule, &scalar)) return NULL;
+
+    Vector *v = (Vector*)PyCapsule_GetPointer(capsule, "Vector");
+    if (!v) return NULL;
+
+    Vector *result = scalar_mul(v, scalar);
+
+    return PyCapsule_New((void*)result, "Vector", NULL);
+}
+
+static PyObject* py_scalar_div(PyObject* self, PyObject* args){
+    PyObject *capsule;
+    float scalar;
+
+    if (!PyArg_ParseTuple(args, "Of", &capsule, &scalar)) return NULL;
+
+    Vector *v = (Vector*)PyCapsule_GetPointer(capsule, "Vector");
+    if (!v) return NULL;
+
+    if (scalar == 0) {
+        PyErr_SetString(PyExc_ZeroDivisionError, "Division by zero");
+        return NULL;
+    }
+
+    Vector *result = scalar_div(v, scalar);
+
+    return PyCapsule_New((void*)result, "Vector", NULL);
+}
+
+static PyObject* py_vec_mod(PyObject* self, PyObject* args){
+    PyObject *capsule;
+    // Only one argument: the Vector capsule
+    if (!PyArg_ParseTuple(args, "O", &capsule)) return NULL;
+    Vector *v = (Vector*)PyCapsule_GetPointer(capsule, "Vector");
+    if (!v) return NULL;
+    float result = vec_mod(v);  // call your C function
+    // Return as Python float
+    return PyFloat_FromDouble((double)result);
+}
+
 static PyObject* py_create_mat(PyObject* self, PyObject* args){
     PyObject* py_list;
 
@@ -146,6 +226,11 @@ static PyMethodDef MiniMLMethods[] = {
     {"py_create_vec", py_create_vec, METH_VARARGS, "Create a vector"},
     {"py_print_vec", py_print_vec, METH_VARARGS, "Print a vector"},
     {"py_free_vec", py_free_vec, METH_VARARGS, "Free a vector"},
+    {"py_vec_add", py_vec_add, METH_VARARGS, "Vector Addition"},
+    {"py_vec_sub", py_vec_sub, METH_VARARGS, "Vector Subtraction"},
+    {"py_scalar_mul", py_scalar_mul, METH_VARARGS, "Scalar Multiplication of vector"},
+    {"py_scalar_div", py_scalar_div, METH_VARARGS, "Scalar Divison of vector"},
+    {"py_vec_mod", py_vec_mod, METH_VARARGS, "Magnitude of vector"},
     {"py_create_mat", py_create_mat, METH_VARARGS, "Create a matrix"},
     {"py_print_mat", py_print_mat, METH_VARARGS, "Print a matrix"},
     {"py_free_mat", py_free_mat, METH_VARARGS, "Free a matrix"},

@@ -7,6 +7,7 @@
 # print(primes.generate_primes(50))
 
 import mini_ml
+'''
 # Create a vector from a Python list
 vec = mini_ml.py_create_vec([1.0, 2.0, 3.5, 4])
 
@@ -24,3 +25,13 @@ mini_ml.py_print_mat(mat)
 
 # Free memory
 mini_ml.py_free_mat(mat)
+'''
+
+vec1 = mini_ml.py_create_vec([1.0, 2.0, 3.5, 4])
+vec2 = mini_ml.py_create_vec([1.0, 2.0, 3.5, 4])
+
+vec3 = mini_ml.py_vec_add(vec1,vec2)
+mini_ml.py_free_vec(vec1)
+mini_ml.py_free_vec(vec2)
+mini_ml.py_print_vec(vec3)
+mini_ml.py_free_vec(vec3)
