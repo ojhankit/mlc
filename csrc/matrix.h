@@ -12,5 +12,6 @@ void free_mat(Matrix* m);
 void print_mat(Matrix* m);
 
 Matrix* mat_mul(Matrix* mat1, Matrix* mat2);
+Matrix* mat_transpose(Matrix* mat);
 
 #endif

@@ -263,6 +263,18 @@ static PyObject* py_mat_mul(PyObject* self, PyObject* args){
     return PyCapsule_New((void*)result, "Matrix", NULL);
 }
 
+static PyObject* py_mat_transpose(PyObject* self, PyObject* args){
+    PyObject* capsule;
+    if (!PyArg_ParseTuple(args, "O", &capsule)) {
+        return NULL;
+    }
+    Matrix* m = (Matrix*)PyCapsule_GetPointer(capsule, "Matrix");
+    if (m == NULL) return NULL;
+
+    Matrix* res = mat_transpose(m);
+    return PyCapsule_New((void*)res, "Matrix", NULL);
+}
+
 static PyMethodDef MiniMLMethods[] = {
     {"py_create_vec", py_create_vec, METH_VARARGS, "Create a vector"},
     {"py_print_vec", py_print_vec, METH_VARARGS, "Print a vector"},
@@ -277,6 +289,7 @@ static PyMethodDef MiniMLMethods[] = {
     {"py_print_mat", py_print_mat, METH_VARARGS, "Print a matrix"},
     {"py_free_mat", py_free_mat, METH_VARARGS, "Free a matrix"},
     {"py_mat_mul", py_mat_mul, METH_VARARGS, "Matrix Multiplication"},
+    {"py_mat_transpose",py_mat_transpose,METH_VARARGS,"Matrix transpose"},
     {NULL, NULL, 0, NULL}
 };
 

@@ -53,3 +53,21 @@ Matrix* mat_mul(Matrix* mat1, Matrix* mat2){
     }
     return res;
 }
+
+Matrix* mat_transpose(Matrix* mat){
+    int rows = mat->rows;
+    int cols = mat->cols;
+    Matrix* new_matrix = (Matrix*)malloc(sizeof(Matrix));
+    new_matrix->rows = cols;
+    new_matrix->cols = rows;
+    new_matrix->data = (float**)malloc(cols * sizeof(float*));
+    for (int i = 0; i < cols; i++) {
+        new_matrix->data[i] = (float*)malloc(rows * sizeof(float));
+    }
+    for(int i=0;i<rows;i++){
+        for(int j=0;j<cols;j++){
+            new_matrix->data[i][j] = mat->data[j][i];
+        }
+    }
+    return new_matrix;
+}
