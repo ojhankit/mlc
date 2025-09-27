@@ -11,4 +11,6 @@ Matrix* create_mat(int rows, int cols);
 void free_mat(Matrix* m);
 void print_mat(Matrix* m);
 
+Matrix* mat_mul(Matrix* mat1, Matrix* mat2);
+
 #endif

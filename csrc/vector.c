@@ -74,3 +74,15 @@ float vec_mod(const Vector* v){
     }
     return sqrt(sum);
 }
+
+float dot(const Vector* v1, const Vector* v2){
+    float sum = 0.0f;
+    if(v1->size != v2->size){
+        fprintf(stderr,"size not same\n");
+        return 0.0f;
+    }
+    for(int i=0;i<v1->size;i++){
+        sum += (v1->data[i] * v2->data[i]);
+    }
+    return sum;
+}

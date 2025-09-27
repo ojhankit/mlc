@@ -18,7 +18,7 @@ mini_ml_module = Extension(
         'csrc/wrapper.c',           # Python wrapper functions
     ],
     include_dirs=['csrc'],
-    extra_compile_args=['-O2', '-Wall', '-fPIC'],  # Optimizations & warnings
+    extra_compile_args=['-O1', '-Wall', '-fPIC'],  # Optimizations & warnings
 )
 
 # Setup script

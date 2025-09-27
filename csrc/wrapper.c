@@ -142,6 +142,23 @@ static PyObject* py_vec_mod(PyObject* self, PyObject* args){
     return PyFloat_FromDouble((double)result);
 }
 
+static PyObject* py_vec_dot(PyObject *self, PyObject *args){
+    PyObject *capsule1, *capsule2;
+    if (!PyArg_ParseTuple(args, "OO", &capsule1, &capsule2)) return NULL;
+    Vector *v1 = (Vector*)PyCapsule_GetPointer(capsule1, "Vector");
+    Vector *v2 = (Vector*)PyCapsule_GetPointer(capsule2, "Vector");
+
+    if (!v1 || !v2) return NULL;
+
+    if (v1->size != v2->size) {
+        PyErr_SetString(PyExc_ValueError, "Vector sizes do not match");
+        return NULL;
+    }
+
+    float result = dot(v1, v2);
+    return PyFloat_FromDouble((double)result);
+}
+
 static PyObject* py_create_mat(PyObject* self, PyObject* args){
     PyObject* py_list;
 
@@ -222,6 +239,30 @@ static PyObject* py_print_mat(PyObject* self, PyObject* args){
     Py_RETURN_NONE;
 }
 
+static PyObject* py_mat_mul(PyObject* self, PyObject* args){
+    PyObject *capsule1, *capsule2;
+    if(!PyArg_ParseTuple(args,"OO",&capsule1,&capsule2)){
+        return NULL;
+    }
+    Matrix* mat1 = (Matrix*)PyCapsule_GetPointer(capsule1,"Matrix");
+    Matrix* mat2 = (Matrix*)PyCapsule_GetPointer(capsule2,"Matrix");
+
+    if (!mat1 || !mat2) {
+        PyErr_SetString(PyExc_ValueError, "Invalid matrix capsules");
+        return NULL;
+    }
+
+    // Call your C matrix multiplication
+    Matrix* result = mat_mul(mat1, mat2);
+    if (!result) {
+        PyErr_SetString(PyExc_ValueError, "Matrix dimensions do not match for multiplication");
+        return NULL;
+    }
+
+    // Wrap the result in a PyCapsule and return
+    return PyCapsule_New((void*)result, "Matrix", NULL);
+}
+
 static PyMethodDef MiniMLMethods[] = {
     {"py_create_vec", py_create_vec, METH_VARARGS, "Create a vector"},
     {"py_print_vec", py_print_vec, METH_VARARGS, "Print a vector"},
@@ -231,9 +272,11 @@ static PyMethodDef MiniMLMethods[] = {
     {"py_scalar_mul", py_scalar_mul, METH_VARARGS, "Scalar Multiplication of vector"},
     {"py_scalar_div", py_scalar_div, METH_VARARGS, "Scalar Divison of vector"},
     {"py_vec_mod", py_vec_mod, METH_VARARGS, "Magnitude of vector"},
+    {"py_vec_dot",py_vec_dot,METH_VARARGS,"Dot Product of vectors"},
     {"py_create_mat", py_create_mat, METH_VARARGS, "Create a matrix"},
     {"py_print_mat", py_print_mat, METH_VARARGS, "Print a matrix"},
     {"py_free_mat", py_free_mat, METH_VARARGS, "Free a matrix"},
+    {"py_mat_mul", py_mat_mul, METH_VARARGS, "Matrix Multiplication"},
     {NULL, NULL, 0, NULL}
 };
 
